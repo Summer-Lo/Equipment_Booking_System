@@ -1,0 +1,43 @@
+{
+
+  "info": [
+    {
+      "label": "CPU Temp",
+      "command": "vcgencmd measure_temp | cut -d = -f 2 | awk '{printf \"%s \", $1}'",
+      "interval": 5
+    },
+    {
+      "label": "CPU Load",
+      "command": "top -bn1 | grep load | awk '{printf \"%.2f%%\", $(NF-2)}'",
+      "interval": 1
+    },
+    {
+      "label": "Memory",
+      "command": "free -m | awk 'NR==2{printf \"%s/%sMB\", $3,$2 }'",
+      "interval": 5
+    },
+    {
+      "label": "UP Time",
+      "command": "uptime -p | cut -d 'p' -f 2 | awk '{ printf \"%s\", $0 }'",
+      "interval": 10
+    }
+  ],
+  "commands": [
+    {
+      "label": "show results",
+      "command": "sh /home/pi/Desktop/PolyU_Attendance_System/display_result.sh"
+    },
+    {
+      "label": "shutdown",
+      "command": "shutdown"
+    },
+    {
+      "label": "cancel shutdown",
+      "command": "shutdown -c"
+    },
+    {
+      "label": "reboot",
+      "command": "reboot"
+    }
+  ]
+}
