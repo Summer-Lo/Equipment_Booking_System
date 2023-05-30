@@ -23,7 +23,7 @@ def display_update(OLED_screen):
         if(readID == 0):
             datetime = input_setup.date_now()[5:]+" "+input_setup.time_now()
             display_setup.OLED_print_msg(OLED_screen,datetime,">Tap student card","to register "+host.location)
-            print(datetime)
+            #print(datetime)
             time.sleep(1)
         else:
             time.sleep(1)
@@ -87,12 +87,12 @@ try:
                         datetime = input_setup.date_now()[5:]+" "+input_setup.time_now()
                         datetimeMQTT = input_setup.date_now()+" "+input_setup.time_now()+".00+0800"
                         display_setup.OLED_print_id(OLED_screen,barcode)
-                        message = mqttsetup.mqtt_bookMessage_generator(barcode,datetimeMQTT,host.location)
+                        message = mqttsetup.mqtt_bookMessage_generator(str(barcode),str(datetimeMQTT),str(host.location))
                         mqttsetup.mqtt_publish_record(client,host.topic,message)
                         print(message)
                         barcode = ''
                         scancode = ''
-                        time.sleep(4)
+                        time.sleep(3)
                         readID = 0
                     else:
                         # Before END OF INPUT
