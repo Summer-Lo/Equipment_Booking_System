@@ -15,9 +15,11 @@ import mqttsetup
 import sys
 
 readID = 0
+datetime = input_setup.date_now()[5:]+" "+input_setup.time_now()
+barcode_display = ''
 
 def display_update(OLED_screen):
-    global readID
+    global readID,datetime,barcode_display
     time.sleep(15)
     while True:
         if(readID == 0):
@@ -25,8 +27,14 @@ def display_update(OLED_screen):
             display_setup.OLED_print_msg(OLED_screen,datetime,">Tap student card","to register "+host.location)
             #print(datetime)
             time.sleep(1)
+        elif(readID == 2):
+            datetime = input_setup.date_now()[5:]+" "+input_setup.time_now()
+            display_setup.OLED_print_id(OLED_screen,barcode_display)
+            barcode_display = ''
+            time.sleep(3)
+            readID = 0
         else:
-            time.sleep(1)
+            time.sleep(0.1)
             pass
 
 # ASCIICode Scanning
@@ -84,18 +92,18 @@ try:
                     #print("scancode:",scancode)
                     if scancode == 28:
                         print("Data:",barcode)
-                        datetime = input_setup.date_now()[5:]+" "+input_setup.time_now()
+                        barcode_display = barcode
+                        readID = 2
                         datetimeMQTT = input_setup.date_now()+" "+input_setup.time_now()+".00+0800"
-                        display_setup.OLED_print_id(OLED_screen,barcode)
                         message = mqttsetup.mqtt_bookMessage_generator(str(barcode),str(datetimeMQTT),str(host.location))
                         mqttsetup.mqtt_publish_record(client,host.topic,message)
                         print(message)
                         barcode = ''
                         scancode = ''
-                        time.sleep(3)
-                        readID = 0
+                        time.sleep(0.1)
                     else:
                         # Before END OF INPUT
+                        datetime = input_setup.date_now()[5:]+" "+input_setup.time_now()
                         display_setup.OLED_print_msg(OLED_screen,datetime,">Loading")
                         print("scancode:",scancode)
                         key = scancodes.get(scancode, NOT_RECOGNIZED_KEY)
@@ -110,7 +118,7 @@ try:
                     display_setup.OLED_print_msg(OLED_screen,datetime,">Tap student card","to register "+str(host.location))
                     print("NOW: ",datetime)
                     time.sleep(1)
-            #elif (readID == 2):21024929G
+            #elif (readID == 2):
                     
             #display_setup.OLED_print_msg(OLED_screen,datetime,">Session booked")
             '''
